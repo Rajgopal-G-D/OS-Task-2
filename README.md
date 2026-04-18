@@ -138,6 +138,8 @@ When you run `./engine start <id> <rootfs> "<command>"`, the supervisor does the
 4. Sets up a pipe before `clone()` so the supervisor can read the container's stdout/stderr and write it to the log file.
 
 > **Note:** `CLONE_NEWPID` (PID namespace) is intentionally **not used** because it can cause kernel panics in certain VM configurations. See the Design Decisions section for details.
+> <img width="799" height="163" alt="1" src="https://github.com/user-attachments/assets/84bd3e63-0621-4399-8872-dbf66de6608e" />
+
 
 ### 2. Supervisor Daemon
 
@@ -152,6 +154,12 @@ The supervisor is the central component of the runtime. Here is what happens whe
 4. For each `start` command, it forks a container, sets up a logging pipe, and stores the container's metadata.
 5. It handles `SIGCHLD` to reap exited child processes and prevent zombies.
 6. On `SIGINT` or `SIGTERM`, it gracefully stops all running containers and cleans up the socket file.
+   <img width="1366" height="768" alt="image" src="https://github.com/user-attachments/assets/0ef45acd-3b77-4395-a64d-5e59dd972a4a" />
+   <img width="1366" height="768" alt="image" src="https://github.com/user-attachments/assets/26007ccd-1757-4d33-9f7e-49664e3787f5" />
+   <img width="1366" height="768" alt="image" src="https://github.com/user-attachments/assets/59863842-a632-459d-8d57-218cf46b299d" />
+   <img width="1366" height="768" alt="image" src="https://github.com/user-attachments/assets/2a01bae3-bc6f-4bdd-9200-ba837ea0d3f3" />
+
+
 
 The supervisor must remain running in a terminal for CLI commands to work. Without it, there is nothing listening on the socket and all CLI commands will fail.
 
@@ -171,6 +179,8 @@ To view logs at any time:
 ```
 
 This sends a `logs` command to the supervisor over the UNIX socket, and the supervisor reads and returns the content of the corresponding log file.
+<img width="1275" height="806" alt="3" src="https://github.com/user-attachments/assets/570bd047-d8db-4833-acb5-9b5234bd6cb5" />
+
 
 ### 4. Control Plane (Path B — UNIX Socket)
 
@@ -198,6 +208,7 @@ Supported commands over the socket:
 | `ps` | Returns a list of all containers with their ID, PID, and state |
 | `stop <id>` | Sends SIGTERM (then SIGKILL fallback) to the container process |
 | `logs <id>` | Returns the contents of `logs/<id>.log` |
+<img width="1305" height="195" alt="4" src="https://github.com/user-attachments/assets/01c962a0-f011-4a06-90f9-d5ed72620168" />
 
 ### 5. Kernel Memory Monitor
 
